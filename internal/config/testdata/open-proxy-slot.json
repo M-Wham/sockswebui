@@ -1,0 +1,34 @@
+{
+  "endpoints": [
+    {
+      "id": "WG-SE",
+      "name": "se-got-wg-001",
+      "kind": "wireguard",
+      "private_key": "PdiYHaNgelIcWSkAq9W9uGxLP0LewPMvK0bLtzQt/f8=",
+      "addresses": ["10.64.0.2/32"],
+      "dns": ["10.64.0.1"],
+      "peer_public_key": "i8EE4M/fEuIxdG1xAuq9KLAKDXiI9n4v7TJbHBSOgXs=",
+      "endpoint": "198.51.100.10:51820",
+      "allowed_ips": ["0.0.0.0/0", "::/0"]
+    }
+  ],
+  "slots": [
+    {
+      "id": 1,
+      "name": "open",
+      "enabled": true,
+      "bind_addr": "0.0.0.0",
+      "port": 1080,
+      "route": ["WG-SE"],
+      "killswitch": "block",
+      "health": {
+        "interval_s": 30,
+        "url": "https://am.i.mullvad.net/json",
+        "fail_threshold": 2
+      }
+    }
+  ],
+  "settings": {
+    "ui_bind_addr": "0.0.0.0:8080"
+  }
+}

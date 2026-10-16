@@ -1,0 +1,23 @@
+#!/bin/sh
+# sockswebui postrm: reload systemd on remove. Delete data and user on purge.
+set -e
+
+case "$1" in
+  remove)
+    if [ -d /run/systemd/system ]; then
+      systemctl daemon-reload
+    fi
+    ;;
+  purge)
+    rm -rf /var/lib/sockswebui
+    rm -f /var/lib/sockswebui.removed
+    if getent passwd sockswebui >/dev/null 2>&1; then
+      userdel sockswebui || echo "sockswebui: could not delete user sockswebui; it was left behind" >&2
+    fi
+    if getent group sockswebui >/dev/null 2>&1; then
+      groupdel sockswebui || echo "sockswebui: could not delete group sockswebui; it was left behind" >&2
+    fi
+    ;;
+esac
+
+exit 0

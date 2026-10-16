@@ -1,0 +1,4 @@
+*
+!dist/sockswebui-linux-amd64
+!dist/sockswebui-linux-arm64
+!dist/sockswebui-linux-armv7

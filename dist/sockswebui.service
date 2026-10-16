@@ -1,0 +1,41 @@
+[Unit]
+Description=sockswebui - SOCKS5 proxy slots with WireGuard routes
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=sockswebui
+Group=sockswebui
+StateDirectory=sockswebui
+StateDirectoryMode=0700
+UMask=0077
+ExecStart=/usr/local/bin/sockswebui --data-dir /var/lib/sockswebui
+Restart=on-failure
+RestartSec=5
+
+# Hardening. Only ports above 1024 are used, so no capabilities are needed.
+NoNewPrivileges=yes
+CapabilityBoundingSet=
+AmbientCapabilities=
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+# AF_NETLINK is required: wireguard-go (device/sticky_linux.go, startRouteListener,
+# called from BindUpdate) opens an AF_NETLINK/NETLINK_ROUTE socket; without it device.Up() fails.
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX AF_NETLINK
+RestrictNamespaces=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+# MemoryDenyWriteExecute: the Go runtime does not JIT or map W+X pages, and the
+# binary is static (CGO_ENABLED=0), so it is compatible with this setting.
+MemoryDenyWriteExecute=yes
+SystemCallFilter=@system-service
+SystemCallArchitectures=native
+
+[Install]
+WantedBy=multi-user.target

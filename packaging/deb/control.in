@@ -1,0 +1,14 @@
+Package: sockswebui
+Version: @DEBVER@
+Architecture: @ARCH@
+Maintainer: M-Wham <218146696+M-Wham@users.noreply.github.com>
+Installed-Size: @SIZE@
+Depends: passwd
+Section: net
+Priority: optional
+Homepage: https://github.com/M-Wham/sockswebui
+Description: SOCKS5 proxy slots with WireGuard routes
+ sockswebui is a single static program with a web UI. It manages up to four
+ SOCKS5 proxy slots. Each slot sends traffic through a route of WireGuard
+ tunnels and optional upstream SOCKS5 or HTTP proxies. The kill switch of each
+ slot blocks traffic by default when the route fails.

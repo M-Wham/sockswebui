@@ -1,0 +1,18 @@
+#!/bin/sh
+# sockswebui prerm: stop and disable the unit on remove. Upgrade does nothing.
+set -e
+
+case "$1" in
+  remove | deconfigure)
+    # Marker for postinst: a later install is a fresh enable, not an upgrade.
+    # It lives outside the data dir, which the service user owns.
+    : >/var/lib/sockswebui.removed
+    if [ -d /run/systemd/system ]; then
+      systemctl disable --now sockswebui.service || true
+    elif command -v systemctl >/dev/null 2>&1; then
+      systemctl disable sockswebui.service 2>/dev/null || true
+    fi
+    ;;
+esac
+
+exit 0

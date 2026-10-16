@@ -1,0 +1,30 @@
+{
+  "name": "sockswebui-web",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build && node scripts/size.mjs",
+    "check": "svelte-check --tsconfig ./tsconfig.json --fail-on-warnings",
+    "test": "vitest run",
+    "smoke": "playwright test",
+    "p5-exit": "playwright test -c playwright.p5.config.ts",
+    "p7-exit": "playwright test -c playwright.p7.config.ts",
+    "p8-exit": "playwright test -c playwright.p8.config.ts",
+    "p9-exit": "playwright test -c playwright.p9.config.ts",
+    "p10-secrets-exit": "playwright test -c playwright.p10.config.ts",
+    "readme-shots": "playwright test -c playwright.shots.config.ts"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.63.0",
+    "@sveltejs/vite-plugin-svelte": "^7.3.1",
+    "@tsconfig/svelte": "^5.0.8",
+    "@types/node": "^26.6.4",
+    "svelte": "^5.57.1",
+    "svelte-check": "^4.7.6",
+    "typescript": "^6.0.3",
+    "vite": "^8.3.2",
+    "vitest": "^5.0.3"
+  }
+}

@@ -1,0 +1,71 @@
+#!/bin/sh
+# sockswebui postinst: create the user, then enable and start the unit.
+set -e
+
+DATA=/var/lib/sockswebui
+MARKER=/var/lib/sockswebui.removed
+
+systemd_running() { [ -d /run/systemd/system ]; }
+
+start_warn() {
+  echo "sockswebui: start failed; see journalctl -u sockswebui" >&2
+}
+
+case "$1" in
+  configure) ;;
+  abort-remove | abort-deconfigure)
+    rm -f "$MARKER"
+    if systemd_running; then
+      systemctl enable sockswebui.service
+      systemctl start sockswebui.service || start_warn
+    fi
+    exit 0
+    ;;
+  *) exit 0 ;;
+esac
+
+if ! getent passwd sockswebui >/dev/null 2>&1; then
+  if getent group sockswebui >/dev/null 2>&1; then
+    useradd --system -g sockswebui --no-create-home \
+      --home-dir "$DATA" --shell /usr/sbin/nologin sockswebui
+  else
+    useradd --system --user-group --no-create-home \
+      --home-dir "$DATA" --shell /usr/sbin/nologin sockswebui
+  fi
+fi
+
+# First install: no old version, or a reinstall after remove (prerm left a marker).
+first=0
+if [ -z "${2:-}" ] || [ -e "$MARKER" ]; then
+  first=1
+fi
+rm -f "$MARKER"
+
+running=0
+if systemd_running; then
+  running=1
+  systemctl daemon-reload
+  if [ "$first" -eq 1 ]; then
+    systemctl enable sockswebui.service
+    systemctl start sockswebui.service || start_warn
+  else
+    systemctl try-restart sockswebui.service || start_warn
+  fi
+fi
+
+if [ "$first" -eq 1 ]; then
+  ip=""
+  for w in $(hostname -I 2>/dev/null || true); do
+    case "$w" in
+      *:*) ;;
+      *) ip="$w"; break ;;
+    esac
+  done
+  [ -n "$ip" ] || ip="<device-ip>"
+  if [ "$running" -eq 0 ]; then
+    echo "sockswebui: systemd is not running, so the unit was not started."
+  fi
+  echo "sockswebui: open http://$ip:8787/ and set the admin password now. Until it is set, anyone who can reach that port can set it."
+fi
+
+exit 0

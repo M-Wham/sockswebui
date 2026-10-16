@@ -1,0 +1,172 @@
+/*
+ * Forest console theme for socksWebUI.
+ * Imported from src/main.ts after app.css and fonts.css, so it overrides the custom properties
+ * app.css defines and restyles the classes app.css already uses (.form-card .panel .field .hint
+ * button input).
+ * Tokens defined per palette: --bg --surface --fg --muted --border --accent --accent-fg
+ * --danger-bg --danger-fg --ok-bg --ok-fg --error --focus --glow-a --glow-b --tag-up.
+ * Four palettes: forest (default, dark), tide (dark), wine (dark), forest-light.
+ * Pick with <html data-theme="forest|tide|wine|forest-light">.
+ * Text/background pairs are checked >= 4.5:1 and borders >= 3:1 (WCAG AA) by contrast.test.ts.
+ */
+:root,
+:root[data-theme="forest"] {
+  --bg: #082019;
+  --surface: #0d2d25;
+  --fg: #e4dcc8;
+  --muted: #b3ab97;
+  --border: #5f7d71;
+  --accent: #2fd6a3;
+  --accent-fg: #04140f;
+  --danger-bg: #8f2d1f;
+  --danger-fg: #ffffff;
+  --ok-bg: #166534;
+  --ok-fg: #ffffff;
+  --error: #ff9f8c;
+  --focus: #7fc8ff;
+  --glow-a: #0f3a30;
+  --glow-b: #0a2e26;
+  --tag-up: #2fd6a3;
+  color-scheme: dark;
+}
+:root[data-theme="tide"] {
+  --bg: #07182f;
+  --surface: #0f3157;
+  --border: #6a8cb5;
+  --accent: #f0b56a;
+  --accent-fg: #1a1104;
+  --glow-a: #123a63;
+  --glow-b: #0d2c4f;
+}
+:root[data-theme="wine"] {
+  --bg: #220a14;
+  --surface: #3f1626;
+  --muted: #c0b39f;
+  --border: #b07489;
+  --accent: #e8a0bf;
+  --accent-fg: #2a0a18;
+  --error: #ffb4a3;
+  --glow-a: #4a1a2a;
+  --glow-b: #3a1421;
+}
+:root[data-theme="forest-light"] {
+  --bg: #eef3ea;
+  --surface: #fbfdf8;
+  --fg: #12301f;
+  --muted: #455a4d;
+  --border: #66806f;
+  --accent: #0b6b4d;
+  --accent-fg: #ffffff;
+  --danger-bg: #8f2d1f;
+  --danger-fg: #ffffff;
+  --ok-bg: #166534;
+  --ok-fg: #ffffff;
+  --error: #a52a16;
+  --focus: #1b5fb5;
+  --glow-a: #dbe8d6;
+  --glow-b: #e4eedf;
+  --tag-up: #0b6b4d;
+  color-scheme: light;
+}
+
+/* Typography: IBM Plex Mono for all text. Falls back to the system monospace offline. */
+:root {
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+}
+body {
+  background:
+    radial-gradient(1200px 700px at 78% 4%, var(--glow-a) 0%, transparent 70%),
+    radial-gradient(900px 600px at 10% 90%, var(--glow-b) 0%, transparent 70%),
+    var(--bg);
+  background-attachment: fixed;
+  font-family: var(--font-mono);
+}
+h1,
+h2,
+h3 {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+h1 { font-size: 1.2rem; }
+h2 { font-size: 1rem; }
+h3 { font-size: 0.8rem; }
+code,
+kbd,
+.mono {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+}
+a { color: var(--accent); }
+
+input,
+select,
+textarea {
+  border-radius: 2px;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--bg) 70%, transparent);
+  color: var(--fg);
+}
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  border-color: var(--accent);
+}
+.field > label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+/* A label wrapping a checkbox or radio is body text, not a small caps field label. */
+.field > label:has(> input[type='checkbox'], > input[type='radio']) {
+  font-family: inherit;
+  font-size: inherit;
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--fg);
+}
+
+/* Buttons: outlined by default, filled accent for the primary action. */
+button {
+  border-radius: 2px;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+button.secondary {
+  border-color: var(--border);
+  color: var(--fg);
+}
+button.secondary:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+button.danger {
+  background: var(--danger-bg);
+  border-color: var(--danger-bg);
+  color: var(--danger-fg);
+}
+
+.form-card,
+.panel {
+  border-radius: 2px;
+  border-color: var(--border);
+  background: color-mix(in srgb, var(--surface) 80%, transparent);
+}
+.hint { font-size: 0.8rem; }
+
+/* State tags: shape + text, never colour alone. */
+.tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border: 1px solid currentColor;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+}
+.tag.up { color: var(--tag-up); }

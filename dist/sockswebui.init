@@ -1,0 +1,37 @@
+#!/bin/sh /etc/rc.common
+# OpenWrt procd init script for sockswebui.
+# Install: /etc/init.d/sockswebui (mode 0755); binary at /usr/bin/sockswebui.
+# Enable and start: /etc/init.d/sockswebui enable && /etc/init.d/sockswebui start
+#
+# Runs as root: OpenWrt's base system has no useradd, so there is no
+# dedicated sockswebui user as with the systemd unit.
+#
+# Data directory: /var is a tmpfs on OpenWrt, so state must live on persistent
+# storage. /etc/sockswebui sits on the overlay (flash); config writes are rare
+# (user edits only), so flash wear is negligible. Use /overlay or an external
+# mount instead if you prefer.
+#
+# UI address: not passed here. The UI listens on settings.ui_bind_addr
+# (default 0.0.0.0:8787), set in the Settings screen and applied at the next
+# start. OpenWrt's default firewall drops inbound WAN traffic, so the UI is
+# reachable from LAN only unless you add a WAN accept rule.
+
+USE_PROCD=1
+START=95
+STOP=10
+
+PROG=/usr/bin/sockswebui
+
+start_service() {
+	mkdir -p /etc/sockswebui
+	chmod 0700 /etc/sockswebui
+
+	procd_open_instance
+	procd_set_param command "$PROG" --data-dir /etc/sockswebui
+	# respawn threshold(s) timeout(s) retry: restart if it dies within 3600s,
+	# wait 5s between attempts, give up after 5 failures.
+	procd_set_param respawn 3600 5 5
+	procd_set_param stdout 1
+	procd_set_param stderr 1
+	procd_close_instance
+}
